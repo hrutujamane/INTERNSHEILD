@@ -243,3 +243,5 @@ pm2 start server.js --name internshield-api
 ```
 
 Set `NODE_ENV=production` and update the CORS origin in `server.js` to your domain.
+Developed by team NEXUS at AISSMS COE.
+
