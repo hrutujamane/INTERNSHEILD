@@ -143,6 +143,24 @@ export default function Home() {
           © {new Date().getFullYear()} InternShield — Protecting students from fake internships.
         </footer>
       </div>
+      <section className="py-12 bg-gray-50">
+  <div className="max-w-4xl mx-auto px-4 text-center">
+    <h2 className="text-3xl font-bold text-gray-800 mb-4">Get in Touch</h2>
+    <p className="text-gray-600 mb-8">Have a question or found a scam? Let us know.</p>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
+        <h3 className="font-semibold text-lg">Email Us</h3>
+        <p className="text-blue-600">support@internshield.com</p>
+      </div>
+      <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
+        <h3 className="font-semibold text-lg">Report a Scam</h3>
+        <p className="text-blue-600">report@internshield.com</p>
+      </div>
     </div>
+  </div>
+</section>
+    </div>
+    
   );
 }

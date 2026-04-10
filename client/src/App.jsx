@@ -1,10 +1,10 @@
 import{Routes,Route} from 'react-router-dom';
-import Home from './pages/home';
+import Home from './pages/Home';
 
 export default function App(){
   return(
     <Routes>
-      <Route path="/" element={<home/>} />
+      <Route path="/" element={<Home/>} />
       {/* Future routes: /results/:id, /about, etc. */}
       <Route
       path="*"
@@ -13,7 +13,7 @@ export default function App(){
           <div className="text-center">
             <h1 className="text-4xl font-bold mb-2">404</h1>
             <p className="text-slate-400 mb-4">Page not found</p>
-            <a href="/" className="btn-analyze inline-flex">Go home</a>
+            <a href="/" className="btn-analyze inline-flex">Go Home</a>
             </div>
             
           </div>
