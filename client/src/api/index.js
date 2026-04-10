@@ -1,0 +1,35 @@
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: '/api',
+  timeout: 60000, // AI can take a while
+  headers: { 'Content-Type': 'application/json' },
+});
+
+/**
+ * Submit an internship listing for AI analysis
+ * @param {Object} payload - { inputType, companyName, jobTitle, listingText?, listingUrl? }
+ * @returns {Promise<Object>} Analysis result
+ */
+export async function analyzeInternship(payload) {
+  const { data } = await api.post('/analyze', payload);
+  return data;
+}
+
+/**
+ * Retrieve a previous analysis by ID
+ */
+export async function getAnalysis(id) {
+  const { data } = await api.get(`/analyze/${id}`);
+  return data;
+}
+
+/**
+ * Get platform-wide statistics
+ */
+export async function getPlatformStats() {
+  const { data } = await api.get('/reports/stats');
+  return data;
+}
+
+export default api;
