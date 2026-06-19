@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Mail, Lock, LogIn, Phone, UserCircle, Shield, KeyRound } from 'lucide-react';
+import { Mail, Lock, LogIn, Phone, KeyRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import BrandLogo from '../components/BrandLogo';
+import MeshBackground from '../components/MeshBackground';
 export default function SignIn() {
   const [role, setRole] = useState('student');
   const [section, setSection] = useState('internship');
@@ -36,24 +37,40 @@ export default function SignIn() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/login', { email, password, role, section });
+      const response = await axios.post('/api/login', {
+        email: email.trim(),
+        password,
+        role,
+        section,
+      });
       if (response.data.success) {
         navigate(role === 'admin' ? '/dashboard' : '/home');
       }
     } catch (error) {
-      alert("Invalid Credentials! Try: rutuja@test.com / password123");
+      if (!error.response) {
+        alert('Cannot reach the server. Run "npm run dev" from the project root and try again.');
+        return;
+      }
+      const message = error.response?.data?.message || 'Invalid email or password.';
+      alert(message);
     }
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      {/* Dynamic Background Glows */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
-      
-      <form onSubmit={loginMethod === 'email' || otpSent ? handleLogin : handleSendOtp} className="glass-card-dark p-8 md:p-10 w-full max-w-md relative z-10 transition-transform duration-500 hover:scale-[1.01]">
-        
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden">
+      <MeshBackground />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
 
+      <div className="relative z-10 w-full max-w-md flex flex-col items-center">
+        <div className="mb-8 sm:mb-10">
+          <BrandLogo size="hero" />
+        </div>
+
+        <form
+          onSubmit={loginMethod === 'email' || otpSent ? handleLogin : handleSendOtp}
+          className="glass-card-dark p-8 md:p-10 w-full transition-transform duration-500 hover:scale-[1.01]"
+        >
 
         {/* Section Toggle */}
         <div className="flex p-1 bg-[var(--input-bg)] rounded-xl border border-[var(--glass-border)] mb-6">
@@ -114,7 +131,11 @@ export default function SignIn() {
         <p className="mt-6 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
           Don't have an account? <span className="text-blue-500 hover:text-blue-400 cursor-pointer font-medium" onClick={() => navigate('/signup')}>Create one</span>
         </p>
-      </form>
+        <p className="mt-3 text-center text-xs" style={{ color: 'var(--text-muted)' }}>
+          Demo account — Email: rutuja@test.com · Password: password123
+        </p>
+        </form>
+      </div>
     </div>
   );
 }

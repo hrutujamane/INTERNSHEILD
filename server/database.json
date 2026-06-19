@@ -1,5 +1,15 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": "default-user",
+      "name": "Rutuja",
+      "email": "rutuja@test.com",
+      "password": "$2b$10$O6fxI4OpcR9dF7xDodGFPOCMtb9Wrv4QjNfwFlSILW66vuNZVDBmm",
+      "role": "student",
+      "section": "internship",
+      "createdAt": "2026-06-19T11:29:32.072Z"
+    }
+  ],
   "activities": [
     {
       "id": "1781855659672",
@@ -26,6 +36,15 @@
       "url": null,
       "fileName": "Offer Letter of Data Science.pdf",
       "timestamp": 1781859483029
+    },
+    {
+      "id": "1781868949282",
+      "date": "19/6/2026",
+      "time": "5:05:49 pm",
+      "type": "scan",
+      "url": null,
+      "fileName": "test_internship.pdf",
+      "timestamp": 1781868949413
     }
   ]
 }

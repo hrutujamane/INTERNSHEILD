@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState({ usageCount: 0, pastedLinks: [] });
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/user-stats')
+    fetch('/api/user-stats')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

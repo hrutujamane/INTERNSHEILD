@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User, UserPlus, Phone, UserCircle, Shield, KeyRound } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, Phone, KeyRound } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import BrandLogo from '../components/BrandLogo';
+import MeshBackground from '../components/MeshBackground';
 
 export default function SignUp() {
   const [role, setRole] = useState('student');
@@ -35,7 +37,12 @@ export default function SignUp() {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:5000/api/register', { ...formData, role, section });
+      const response = await axios.post('/api/register', {
+        ...formData,
+        email: formData.email.trim(),
+        role,
+        section,
+      });
       if (response.data.success) {
         alert("Account Created! Please Sign In.");
         navigate('/');
@@ -46,12 +53,20 @@ export default function SignUp() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      {/* Dynamic Background Glows */}
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
-      <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden">
+      <MeshBackground />
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
 
-      <div className="glass-card-dark p-8 md:p-10 w-full max-w-md relative z-10 transition-transform duration-500 hover:scale-[1.01]">
+      <div className="relative z-10 w-full max-w-md flex flex-col items-center">
+        <div className="mb-8 sm:mb-10">
+          <BrandLogo size="hero" />
+        </div>
+
+        <form
+          onSubmit={signupMethod === 'email' || otpSent ? handleSignUp : handleSendOtp}
+          className="glass-card-dark p-8 md:p-10 w-full transition-transform duration-500 hover:scale-[1.01]"
+        >
         
 
 
@@ -76,7 +91,7 @@ export default function SignUp() {
           <button type="button" onClick={() => setSignupMethod('mobile')} className={`text-sm font-medium pb-1 border-b-2 transition-colors ${signupMethod === 'mobile' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}>Mobile OTP</button>
         </div>
 
-        <form onSubmit={signupMethod === 'email' || otpSent ? handleSignUp : handleSendOtp} className="space-y-4">
+        <div className="space-y-4">
           <div className="relative group">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={18} />
             <input type="text" placeholder="Full Name" required className="input-field pl-12" onChange={(e) => setFormData({...formData, name: e.target.value})} disabled={otpSent && signupMethod === 'mobile'} />
@@ -112,11 +127,12 @@ export default function SignUp() {
             <UserPlus size={18} />
             {signupMethod === 'email' || otpSent ? 'SIGN UP' : 'SEND OTP'}
           </button>
-        </form>
+        </div>
 
         <p className="mt-6 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
           Already have an account? <span className="text-blue-500 hover:text-blue-400 cursor-pointer font-medium" onClick={() => navigate('/')}>Sign in</span>
         </p>
+        </form>
       </div>
     </div>
   );

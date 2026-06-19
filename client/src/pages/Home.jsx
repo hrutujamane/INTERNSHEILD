@@ -1,7 +1,4 @@
 import { useState } from 'react';
-import { UserCircle, ShieldCheck, Search, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import MeshBackground from '../components/MeshBackground';
 import AnalyzeForm from '../components/AnalyzeForm';
 import AnalyzingLoader from '../components/AnalyzingLoader';
@@ -12,7 +9,6 @@ import { analyzeInternship } from '../api';
 export default function Home() {
   const [view, setView] = useState('form');
   const [result, setResult] = useState(null);
-  const navigate = useNavigate();
 
   const handleSubmit = async (payload) => {
     setView('loading');
@@ -30,17 +26,6 @@ export default function Home() {
       <MeshBackground />
 
       <div className="relative z-10 flex flex-col flex-1">
-        {/* --- RESTORED NAVBAR WITH LOGO & ADMIN ICON --- */}
-        <nav className="flex justify-between items-center px-8 py-6 border-b transition-colors duration-300" style={{ borderColor: 'var(--glass-border)', background: 'var(--nav-bg)' }}>
-          <div className="flex items-center gap-3">
-            {/* THE ORIGINAL LOGO */}
-            
-           
-          </div>
-          
-          
-        </nav>
-
         <main className="flex-1 flex flex-col items-center px-4 py-12">
           {/* HERO SECTION */}
           {view !== 'results' && (

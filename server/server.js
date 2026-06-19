@@ -23,43 +23,67 @@ function writeDB(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
+async function seedDefaultUser() {
+  const db = readDB();
+  const defaultEmail = 'rutuja@test.com';
+  if (db.users.some((u) => u.email === defaultEmail)) return;
+
+  const hashedPassword = await bcrypt.hash('password123', 10);
+  db.users.push({
+    id: 'default-user',
+    name: 'Rutuja',
+    email: defaultEmail,
+    password: hashedPassword,
+    role: 'student',
+    section: 'internship',
+    createdAt: new Date().toISOString(),
+  });
+  writeDB(db);
+  console.log(`Seeded default user: ${defaultEmail} / password123`);
+}
+
 // --- API ROUTES ---
 
 app.post('/api/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    
-    if (email === "rutuja@test.com" && password === "password123") {
-      return res.json({ success: true, user: { name: "Rutuja", email, role: 'student', section: 'internship' } });
+    const email = (req.body.email || '').trim();
+    const { password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
 
     const db = readDB();
-    const user = db.users.find(u => u.email === email);
+    const user = db.users.find((u) => u.email === email);
     if (!user) {
-      return res.status(401).json({ success: false, message: "User not found" });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: "Invalid credentials" });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
-    res.json({ success: true, user: { name: user.name, email: user.email, role: user.role, section: user.section } });
+    res.json({
+      success: true,
+      user: { name: user.name, email: user.email, role: user.role, section: user.section },
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
 app.post('/api/register', async (req, res) => {
   try {
     const { name, email, password, mobile, role, section } = req.body;
-    if (!email || !password) {
+    const normalizedEmail = (email || '').trim();
+    if (!normalizedEmail || !password) {
       return res.status(400).json({ success: false, message: "Email and password are required" });
     }
 
     const db = readDB();
-    if (db.users.find(u => u.email === email)) {
+    if (db.users.find(u => u.email === normalizedEmail)) {
       return res.status(400).json({ success: false, message: "User already exists" });
     }
 
@@ -67,7 +91,7 @@ app.post('/api/register', async (req, res) => {
     const newUser = {
       id: Date.now().toString(),
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       mobile,
       role: role || 'student',
@@ -136,4 +160,11 @@ app.get('/api/user-stats', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+seedDefaultUser()
+  .then(() => {
+    app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+  })
+  .catch((err) => {
+    console.error('Failed to seed default user:', err);
+    process.exit(1);
+  });
